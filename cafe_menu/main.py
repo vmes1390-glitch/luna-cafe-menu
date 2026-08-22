@@ -54,8 +54,14 @@ def create_item(item: schemas.ItemCreate, db: Session = Depends(get_db)):
     db.refresh(db_item)
     return db_item
 
+import os
+
 @app.get("/", response_class=HTMLResponse, tags=["Frontend"])
 def get_menu_page():
-    # باز کردن و خواندن فایل HTML
-    with open("index.html", "r", encoding="utf-8") as f:
+    # پیدا کردن مسیر دقیق پوشه‌ای که همین فایل main.py توش قرار داره
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    html_path = os.path.join(base_dir, "index.html")
+    
+    # باز کردن و خواندن فایل HTML با مسیر مطلق
+    with open(html_path, "r", encoding="utf-8") as f:
         return f.read()
