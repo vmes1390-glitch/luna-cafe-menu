@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+*.sqlite3
+*.db
+luna_cafe_qr.png

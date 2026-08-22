@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منوی کافه لونا</title>
+    <style>
+        body { font-family: Tahoma, sans-serif; background-color: #f8f9fa; margin: 0; padding: 20px; }
+        .menu-container { max-width: 600px; margin: auto; }
+        h1 { text-align: center; color: #333; }
+        
+        /* استایل‌های کارت‌های منو */
+        .category { background: white; border-radius: 10px; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .category-title { color: #8B4513; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 0; }
+        .item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #ddd; }
+        .item:last-child { border-bottom: none; }
+        .item-name { font-weight: bold; color: #444; }
+        .item-price { color: #2E8B57; font-weight: bold; }
+
+        /* استایل‌های انیمیشن لودینگ */
+        .loader-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 50px;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #8B4513; /* رنگ تم قهوه */
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+        .loading-text {
+            color: #8B4513;
+            font-weight: bold;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* تعریف فریم‌های انیمیشن */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="menu-container">
+    <h1>☕ منوی دیجیتال کافه لونا</h1>
+    
+    <!-- محتوای منو اینجا توسط جاوااسکریپت لود میشه -->
+    <div id="menu-content">
+        <!-- انیمیشن لودینگ جدید -->
+        <div class="loader-container">
+            <div class="spinner"></div>
+            <div class="loading-text">در حال آماده‌سازی منوی کافه لونا...</div>
+        </div>
+    </div>
+</div>
+
+<script>
+const API_URL = '/categories/';
+    async function fetchMenu() {
+        try {
+            // یک وقفه ۱ ثانیه‌ای الکی گذاشتم تا بتونی انیمیشن لودینگ رو قشنگ ببینی
+            // وقتی پروژه نهایی شد می‌تونی این خط رو پاک کنی
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            const response = await fetch(API_URL);
+            const categories = await response.json();
+            
+            const menuDiv = document.getElementById('menu-content');
+            menuDiv.innerHTML = ''; 
+
+            categories.forEach(category => {
+                if(category.items.length === 0) return;
+
+                let categoryHTML = `<div class="category">
+                                        <h2 class="category-title">${category.name}</h2>`;
+                
+                category.items.forEach(item => {
+                    let priceFormat = new Intl.NumberFormat('fa-IR').format(item.price);
+                    categoryHTML += `
+                        <div class="item">
+                            <span class="item-name">${item.name}</span>
+                            <span class="item-price">${priceFormat} تومان</span>
+                        </div>
+                    `;
+                });
+
+                categoryHTML += `</div>`;
+                menuDiv.innerHTML += categoryHTML;
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('menu-content').innerHTML = `
+                <div style="text-align: center; color: red; font-weight: bold;">
+                    خطا در ارتباط با سرور! 
+                </div>`;
+        }
+    }
+
+    fetchMenu();
+</script>
+ّ
+</body>
+</html>
