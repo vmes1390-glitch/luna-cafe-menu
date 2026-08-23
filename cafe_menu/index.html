@@ -2,102 +2,202 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>منوی کافه لونا</title>
-<style>
-        body { 
-            font-family: Tahoma, sans-serif; 
-            background-color: #3e2723; /* رنگ قهوه‌ای تیره برای کل پس‌زمینه */
-            margin: 0; 
-            padding: 20px; 
-            color: #fff; /* متن‌ها رو سفید می‌کنیم که روی قهوه‌ای خوانا باشه */
+    
+    <!-- فونت وزیرمتن -->
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.0.0/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    
+    <!-- اضافه کردن Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- تنظیمات اختصاصی Tailwind برای فونت و رنگ‌ها -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Vazirmatn', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            light: '#ffedd5', // پس زمینه المان‌های فعال
+                            DEFAULT: '#ea580c', // نارنجی-آجری تأکیدی
+                            dark: '#c2410c',
+                        }
+                    }
+                }
+            }
         }
-        .menu-container { max-width: 600px; margin: auto; }
-        h1 { text-align: center; color: #f5f5f5; margin-bottom: 30px; }
-        
-        /* استایل کارت‌های منو */
-        .category { 
-            background: #5d4037; /* قهوه‌ای روشن‌تر برای کارت‌ها */
-            border-radius: 15px; 
-            padding: 20px; 
-            margin-bottom: 20px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3); 
-        }
-        .category-title { 
-            color: #ffcc80; /* رنگ کرم روشن برای تیترها */
-            border-bottom: 2px solid #8d6e63; 
-            padding-bottom: 10px; 
-            margin-top: 0; 
-        }
-        
-        .item { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px dashed #8d6e63; }
-        .item:last-child { border-bottom: none; }
-        
-        .item-info { display: flex; align-items: center; gap: 15px; }
-        .item-image { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid #ffcc80; }
-        .item-details { display: flex; flex-direction: column; }
-        .item-name { font-weight: bold; color: #ffffff; font-size: 1.1em; }
-        .item-description { font-size: 0.85em; color: #d7ccc8; margin-top: 4px; }
-        .item-price { color: #a5d6a7; font-weight: bold; white-space: nowrap; margin-right: 10px; }
+    </script>
 
-        /* لودینگ */
-        .spinner { border-top: 4px solid #ffcc80; }
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; }
+        
+        /* مخفی کردن اسکرول‌بار برای نوار دسته‌بندی افقی */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* انیمیشن پالس برای Splash Screen */
+        .pulse-slow { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
     </style>
 </head>
-<body>
+<body class="bg-stone-50 text-stone-800 antialiased relative">
 
-<div class="menu-container">
-    <h1>☕ منوی دیجیتال کافه لونا</h1>
-    <div id="menu-content">
-        <div class="loader-container">
-            <div class="spinner"></div>
-            <div class="loading-text">در حال آماده‌سازی منوی کافه لونا...</div>
+    <!-- 0. انیمیشن ورودی (Splash Screen) -->
+    <div id="splash" class="fixed inset-0 bg-stone-50 z-50 flex flex-col items-center justify-center transition-opacity duration-700 ease-in-out">
+        <div class="pulse-slow flex flex-col items-center">
+            <span class="text-7xl mb-4">☕</span>
+            <h1 class="text-3xl font-bold text-stone-800 tracking-tight">کافه لونا</h1>
+            <p class="text-stone-500 mt-2 text-sm">در حال آماده‌سازی طعم‌های بی‌نظیر...</p>
         </div>
     </div>
-</div>
 
-<script>
-    const API_URL = '/categories/';
-    async function fetchMenu() {
-        try {
-            const response = await fetch(API_URL);
-            const categories = await response.json();
+    <div class="max-w-md mx-auto relative bg-stone-50 min-h-screen shadow-2xl overflow-hidden">
+        
+        <!-- 1. هدر (Cover, Logo, Info) -->
+        <header class="relative mb-12">
+            <!-- عکس کاور -->
+            <div class="h-44 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=1000&fit=crop');">
+                <div class="absolute inset-0 bg-black/20"></div> <!-- لایه تاریک ملایم روی عکس -->
+            </div>
             
-            const menuDiv = document.getElementById('menu-content');
-            menuDiv.innerHTML = ''; 
+            <!-- آواتار / لوگو -->
+            <div class="absolute -bottom-10 left-1/2 transform -translate-x-1/2">
+                <div class="bg-white p-1 rounded-full shadow-lg">
+                    <!-- به جای لینک پایین، می‌تونی آدرس لوگوی کافه رو بذاری -->
+                    <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=150&h=150&fit=crop" 
+                         class="w-20 h-20 rounded-full object-cover border-2 border-stone-100" alt="Logo">
+                </div>
+            </div>
+        </header>
 
-            categories.forEach(category => {
-                if(category.items.length === 0) return;
+        <!-- نام و بایوگرافی کافه -->
+        <div class="text-center px-4 mb-6 mt-14">
+            <h1 class="text-2xl font-bold text-stone-800">کافه لونا</h1>
+            <p class="text-sm text-stone-500 mt-1.5">لحظاتی گرم و دلنشین با بهترین ترکیب‌ها</p>
+            <div class="flex justify-center gap-5 mt-4 text-stone-400 text-[11px] font-bold">
+                 <span class="flex items-center gap-1">📱 Instagram: @LunaCafe</span>
+                 <span class="flex items-center gap-1">📶 Wi-Fi: Luna_Guest</span>
+            </div>
+        </div>
 
-                let categoryHTML = `<div class="category">
-                                        <h2 class="category-title">${category.name}</h2>`;
+        <!-- 2. نوار دسته‌بندی‌ها (Sticky Navigation) -->
+        <div class="sticky top-0 bg-stone-50/95 backdrop-blur-md z-40 py-3 px-4 border-b border-stone-200">
+            <div id="category-nav" class="flex overflow-x-auto gap-3 no-scrollbar pb-1">
+                <!-- دکمه‌های دسته‌بندی اینجا توسط جاوااسکریپت لود میشن -->
+            </div>
+        </div>
+
+        <!-- 3. لیست محصولات -->
+        <div id="menu-content" class="px-4 py-4 pb-20">
+            <!-- محتوای کارت‌ها اینجا توسط جاوااسکریپت لود میشن -->
+        </div>
+
+        <!-- 4. فوتر -->
+        <footer class="text-center py-6 border-t border-stone-200 mt-4">
+            <p class="text-[10px] text-stone-400">توسعه داده شده با ❤️ برای کافه لونا</p>
+        </footer>
+
+        <!-- دکمه شناور (FAB) برای اسکرول به بالا -->
+        <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" 
+                class="fixed bottom-6 left-4 w-12 h-12 bg-brand text-white rounded-full shadow-lg flex items-center justify-center text-xl z-50 hover:bg-brand-dark transition-colors">
+            ↑
+        </button>
+
+    </div>
+
+    <script>
+        const API_URL = '/categories/';
+        
+        // تابعی برای تغییر رنگ دکمه دسته‌بندیِ فعال
+        function setActiveNav(clickedElement) {
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.classList.remove('bg-brand', 'text-white');
+                btn.classList.add('bg-stone-200', 'text-stone-600');
+            });
+            clickedElement.classList.remove('bg-stone-200', 'text-stone-600');
+            clickedElement.classList.add('bg-brand', 'text-white');
+        }
+
+        async function fetchMenu() {
+            try {
+                const response = await fetch(API_URL);
+                const categories = await response.json();
                 
-                category.items.forEach(item => {
-                    let priceFormat = new Intl.NumberFormat('fa-IR').format(item.price);
-                    categoryHTML += `
-                        <div class="item">
-                            <div class="item-info">
-                                <img src="${item.image_url}" alt="${item.name}" class="item-image" onerror="this.src='https://via.placeholder.com/70'">
-                                <div class="item-details">
-                                    <span class="item-name">${item.name}</span>
-                                    <span class="item-description">${item.description || ''}</span>
+                const navDiv = document.getElementById('category-nav');
+                const menuDiv = document.getElementById('menu-content');
+                
+                navDiv.innerHTML = ''; 
+                menuDiv.innerHTML = ''; 
+
+                categories.forEach((category, index) => {
+                    if(category.items.length === 0) return;
+
+                    // ساخت دکمه‌های نوار Sticky (دکمه اول پیش‌فرض فعاله)
+                    let activeClasses = index === 0 ? 'bg-brand text-white' : 'bg-stone-200 text-stone-600';
+                    navDiv.innerHTML += `
+                        <a href="#cat-${category.id}" onclick="setActiveNav(this)" 
+                           class="cat-btn whitespace-nowrap px-5 py-2 rounded-full text-[13px] font-bold transition-all duration-300 ${activeClasses}">
+                            ${category.name}
+                        </a>
+                    `;
+
+                    // ساخت بخش هر دسته‌بندی
+                    // pt-20 و -mt-16 به خاطر اینه که موقع اسکرول، نوار Sticky روی تیترها نیفته
+                    let categoryHTML = `
+                        <div id="cat-${category.id}" class="pt-20 -mt-16 mb-8">
+                            <div class="flex items-center gap-3 mb-5 pl-2">
+                                <h2 class="text-lg font-bold text-stone-800">${category.name}</h2>
+                                <div class="h-px bg-stone-300 flex-grow"></div>
+                            </div>
+                    `;
+                    
+                    // ساخت کارت محصولات
+                    category.items.forEach(item => {
+                        let priceFormat = new Intl.NumberFormat('fa-IR').format(item.price);
+                        categoryHTML += `
+                            <div class="flex flex-row bg-white rounded-2xl shadow-sm mb-4 p-3 border border-stone-100 hover:shadow-md transition-shadow">
+                                <div class="w-20 h-20 rounded-xl overflow-hidden shrink-0 ms-3 border border-stone-100 bg-stone-50">
+                                    <img src="${item.image_url}" alt="${item.name}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/80'">
+                                </div>
+                                <div class="flex flex-col justify-between flex-grow">
+                                    <div>
+                                        <h3 class="font-bold text-sm text-stone-800">${item.name}</h3>
+                                        <p class="text-[11px] text-stone-500 mt-1 line-clamp-2 leading-relaxed">${item.description || ''}</p>
+                                    </div>
+                                    <div class="text-left mt-2 flex items-baseline justify-end gap-1">
+                                        <span class="text-brand font-bold text-base tracking-tight">${priceFormat}</span>
+                                        <span class="text-[10px] text-brand/80 font-bold">تومان</span>
+                                    </div>
                                 </div>
                             </div>
-                            <span class="item-price">${priceFormat} تومان</span>
-                        </div>
-                    `;
+                        `;
+                    });
+
+                    categoryHTML += `</div>`;
+                    menuDiv.innerHTML += categoryHTML;
                 });
 
-                categoryHTML += `</div>`;
-                menuDiv.innerHTML += categoryHTML;
-            });
-        } catch (error) {
-            document.getElementById('menu-content').innerHTML = `
-                <div style="text-align: center; color: red; font-weight: bold;">خطا در ارتباط با سرور!</div>`;
-        }
-    }
-    fetchMenu();
-</script>
+                // پنهان کردن Splash Screen بعد از لود شدن دیتای سرور
+                setTimeout(() => {
+                    const splash = document.getElementById('splash');
+                    if(splash) {
+                        splash.style.opacity = '0';
+                        setTimeout(() => splash.remove(), 700); // 700ms برای افکت نرم
+                    }
+                }, 500);
 
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('menu-content').innerHTML = `
+                    <div class="text-center text-red-500 font-bold mt-10 p-4 bg-red-50 rounded-xl">
+                        خطا در ارتباط با سرور. لطفاً صفحه را رفرش کنید.
+                    </div>`;
+            }
+        }
+
+        fetchMenu();
+    </script>
 </body>
 </html>
