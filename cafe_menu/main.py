@@ -3,9 +3,8 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
 import os
-
+from fastapi.staticfiles import StaticFiles
 
 import models
 import schemas
@@ -15,13 +14,22 @@ from database import engine, get_db
 # ساخت خودکار جداول دیتابیس بر اساس models.py
 models.Base.metadata.create_all(bind=engine)
 
+
+
 app = FastAPI(
     title="Cafe Digital Menu",
     description="API for managing cafe menu categories and items"
 )
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
 
+base_dir = os.path.dirname(os.path.abspath(__file__))
+static_dir = os.path.join(base_dir, "static")
+
+# اگر پوشه static وجود نداشت، خودش به صورت خودکار می‌سازه‌اش تا ارور نده
+if not os.path.exists(static_dir):
+    os.makedirs(static_dir)
+
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 app.add_middleware(
     CORSMiddleware,
