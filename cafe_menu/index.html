@@ -4,29 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منوی کافه لونا</title>
-    <style>
-        body { font-family: Tahoma, sans-serif; background-color: #f8f9fa; margin: 0; padding: 20px; }
+<style>
+        body { 
+            font-family: Tahoma, sans-serif; 
+            background-color: #3e2723; /* رنگ قهوه‌ای تیره برای کل پس‌زمینه */
+            margin: 0; 
+            padding: 20px; 
+            color: #fff; /* متن‌ها رو سفید می‌کنیم که روی قهوه‌ای خوانا باشه */
+        }
         .menu-container { max-width: 600px; margin: auto; }
-        h1 { text-align: center; color: #333; }
+        h1 { text-align: center; color: #f5f5f5; margin-bottom: 30px; }
         
-        /* استایل‌های کارت‌های منو */
-        .category { background: white; border-radius: 10px; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .category-title { color: #8B4513; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 0; }
+        /* استایل کارت‌های منو */
+        .category { 
+            background: #5d4037; /* قهوه‌ای روشن‌تر برای کارت‌ها */
+            border-radius: 15px; 
+            padding: 20px; 
+            margin-bottom: 20px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); 
+        }
+        .category-title { 
+            color: #ffcc80; /* رنگ کرم روشن برای تیترها */
+            border-bottom: 2px solid #8d6e63; 
+            padding-bottom: 10px; 
+            margin-top: 0; 
+        }
         
-        .item { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px dashed #ddd; }
+        .item { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px dashed #8d6e63; }
         .item:last-child { border-bottom: none; }
         
         .item-info { display: flex; align-items: center; gap: 15px; }
-        .item-image { width: 70px; height: 70px; border-radius: 8px; object-fit: cover; border: 1px solid #eee; }
+        .item-image { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid #ffcc80; }
         .item-details { display: flex; flex-direction: column; }
-        .item-name { font-weight: bold; color: #444; font-size: 1.1em; }
-        .item-description { font-size: 0.85em; color: #777; margin-top: 4px; }
-        .item-price { color: #2E8B57; font-weight: bold; white-space: nowrap; margin-right: 10px; }
+        .item-name { font-weight: bold; color: #ffffff; font-size: 1.1em; }
+        .item-description { font-size: 0.85em; color: #d7ccc8; margin-top: 4px; }
+        .item-price { color: #a5d6a7; font-weight: bold; white-space: nowrap; margin-right: 10px; }
 
         /* لودینگ */
-        .loader-container { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 50px; }
-        .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #8B4513; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .spinner { border-top: 4px solid #ffcc80; }
     </style>
 </head>
 <body>
