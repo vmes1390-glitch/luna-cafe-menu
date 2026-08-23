@@ -91,10 +91,7 @@ async def delete_item(item_id: int, db: Session = Depends(get_db)):
 
 @app.get("/", response_class=HTMLResponse, tags=["Frontend"])
 def get_menu_page():
-    # پیدا کردن مسیر دقیق پوشه‌ای که همین فایل main.py توش قرار داره
     base_dir = os.path.dirname(os.path.abspath(__file__))
     html_path = os.path.join(base_dir, "index.html")
-    
-    # باز کردن و خواندن فایل HTML با مسیر مطلق
     with open(html_path, "r", encoding="utf-8") as f:
         return f.read()
