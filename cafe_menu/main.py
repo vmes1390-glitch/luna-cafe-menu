@@ -3,6 +3,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 
 import models
 import schemas
@@ -15,6 +16,8 @@ app = FastAPI(
     title="Cafe Digital Menu",
     description="API for managing cafe menu categories and items"
 )
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 app.add_middleware(
