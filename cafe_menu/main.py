@@ -4,10 +4,13 @@ from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
+import os
+
 
 import models
 import schemas
 from database import engine, get_db
+
 
 # ساخت خودکار جداول دیتابیس بر اساس models.py
 models.Base.metadata.create_all(bind=engine)
@@ -57,7 +60,34 @@ def create_item(item: schemas.ItemCreate, db: Session = Depends(get_db)):
     db.refresh(db_item)
     return db_item
 
-import os
+# ۴. ویرایش کامل محصول (PUT)
+@app.put("/items/{item_id}", response_model=schemas.ItemResponse, tags=["Items"])
+def update_item(item_id: int, item: schemas.ItemCreate, db: Session = Depends(get_db)):
+    db_item = db.query(models.Item).filter(models.Item.id == item_id).first()
+    if not db_item:
+        raise HTTPException(status_code=404, detail="Item not found")
+    
+    # چک کردن اینکه دسته‌بندی جدید وجود داشته باشه
+    category = db.query(models.Category).filter(models.Category.id == item.category_id).first()
+    if not category:
+        raise HTTPException(status_code=404, detail="Category not found")
+
+    for key, value in item.model_dump().items():
+        setattr(db_item, key, value)
+    
+    db.commit()
+    db.refresh(db_item)
+    return db_item
+
+@app.delete("/items/{item_id}")
+async def delete_item(item_id: int, db: Session = Depends(get_db)):
+    db_item = db.query(models.Item).filter(models.Item.id == item_id).first()
+    if db_item:
+        db.delete(db_item)
+        db.commit()
+        return {"message": "محصول با موفقیت حذف شد"}
+    return {"error": "محصول پیدا نشد"}
+
 
 @app.get("/", response_class=HTMLResponse, tags=["Frontend"])
 def get_menu_page():
