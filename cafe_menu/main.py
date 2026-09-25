@@ -5,27 +5,27 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 import os
 from fastapi.staticfiles import StaticFiles
+from sqladmin import Admin, ModelView
+from sqladmin.authentication import AuthenticationBackend
+from starlette.requests import Request
 
 import models
+from models import Item, Category
 import schemas
 from database import engine, get_db
 
-
 # ساخت خودکار جداول دیتابیس بر اساس models.py
 models.Base.metadata.create_all(bind=engine)
-
-
 
 app = FastAPI(
     title="Cafe Digital Menu",
     description="API for managing cafe menu categories and items"
 )
 
-
 base_dir = os.path.dirname(os.path.abspath(__file__))
 static_dir = os.path.join(base_dir, "static")
 
-# اگر پوشه static وجود نداشت، خودش به صورت خودکار می‌سازه‌اش تا ارور نده
+# اگر پوشه static وجود نداشت، خودش به صورت خودکار می‌سازه‌اش
 if not os.path.exists(static_dir):
     os.makedirs(static_dir)
 
@@ -33,13 +33,13 @@ app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # در نسخه نهایی اینجا دامنه سایتت رو می‌نویسی
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ۱. دریافت تمام دسته‌بندی‌ها به همراه محصولات داخل هر دسته‌بندی
+# ۱. دریافت تمام دسته‌بندی‌ها به همراه محصولات
 @app.get("/categories/", response_model=List[schemas.CategoryResponse], tags=["Categories"])
 def get_categories(db: Session = Depends(get_db)):
     return db.query(models.Category).all()
@@ -56,10 +56,8 @@ def create_category(category: schemas.CategoryCreate, db: Session = Depends(get_
 # ۳. ایجاد یک محصول جدید
 @app.post("/items/", response_model=schemas.ItemResponse, tags=["Items"])
 def create_item(item: schemas.ItemCreate, db: Session = Depends(get_db)):
-    # چک می‌کنیم که آیا دسته‌بندی انتخابی وجود دارد یا نه
     category = db.query(models.Category).filter(models.Category.id == item.category_id).first()
     if not category:
-        # پیام خطای انگلیسی
         raise HTTPException(status_code=404, detail="Category not found")
 
     db_item = models.Item(**item.model_dump())
@@ -68,14 +66,13 @@ def create_item(item: schemas.ItemCreate, db: Session = Depends(get_db)):
     db.refresh(db_item)
     return db_item
 
-# ۴. ویرایش کامل محصول (PUT)
+# ۴. ویرایش کامل محصول
 @app.put("/items/{item_id}", response_model=schemas.ItemResponse, tags=["Items"])
 def update_item(item_id: int, item: schemas.ItemCreate, db: Session = Depends(get_db)):
     db_item = db.query(models.Item).filter(models.Item.id == item_id).first()
     if not db_item:
         raise HTTPException(status_code=404, detail="Item not found")
     
-    # چک کردن اینکه دسته‌بندی جدید وجود داشته باشه
     category = db.query(models.Category).filter(models.Category.id == item.category_id).first()
     if not category:
         raise HTTPException(status_code=404, detail="Category not found")
@@ -87,7 +84,8 @@ def update_item(item_id: int, item: schemas.ItemCreate, db: Session = Depends(ge
     db.refresh(db_item)
     return db_item
 
-@app.delete("/items/{item_id}")
+# ۵. حذف محصول
+@app.delete("/items/{item_id}", tags=["Items"])
 async def delete_item(item_id: int, db: Session = Depends(get_db)):
     db_item = db.query(models.Item).filter(models.Item.id == item_id).first()
     if db_item:
@@ -96,10 +94,81 @@ async def delete_item(item_id: int, db: Session = Depends(get_db)):
         return {"message": "محصول با موفقیت حذف شد"}
     return {"error": "محصول پیدا نشد"}
 
-
+# ۶. صفحه اصلی منو
 @app.get("/", response_class=HTMLResponse, tags=["Frontend"])
 def get_menu_page():
-    base_dir = os.path.dirname(os.path.abspath(__file__))
     html_path = os.path.join(base_dir, "index.html")
     with open(html_path, "r", encoding="utf-8") as f:
         return f.read()
+
+
+# ----------------------------------------------------
+# تنظیمات پنل مدیریت اختصاصی (SQLAdmin)
+# ----------------------------------------------------
+
+class AdminAuth(AuthenticationBackend):
+    async def login(self, request: Request) -> bool:
+        form = await request.form()
+        username = form.get("username")
+        password = form.get("password")
+
+        # نام کاربری و رمز عبور شما و پسرخاله‌تان
+        ADMIN_USERS = {
+            "erfan": "erfan_pass_123",       # حساب شما
+            "vita_admin": "cafe_vita_2026"   # حساب پسرخاله‌تان
+        }
+
+        if username in ADMIN_USERS and ADMIN_USERS[username] == password:
+            request.session.update({"user": username})
+            return True
+        return False
+
+    async def logout(self, request: Request) -> bool:
+        request.session.clear()
+        return True
+
+    async def authenticate(self, request: Request) -> bool:
+        user = request.session.get("user")
+        if not user:
+            return False
+        return True
+
+authentication_backend = AdminAuth(secret_key="vita-secret-random-key-change-this")
+
+# راه‌اندازی داشبورد مدیریت
+admin = Admin(
+    app=app, 
+    engine=engine, 
+    authentication_backend=authentication_backend, 
+    title="پنل مدیریت کافه ویتا"
+)
+
+class CategoryAdmin(ModelView, model=Category):
+    column_list = [Category.id, Category.name]
+    column_labels = {Category.id: "شناسه", Category.name: "نام دسته‌بندی"}
+    name = "دسته‌بندی"
+    name_plural = "دسته‌بندی‌ها"
+    icon = "fa-solid fa-layer-group"
+
+class ItemAdmin(ModelView, model=Item):
+    # ستون‌های جدول
+    column_list = [Item.id, Item.name, Item.price, Item.category_id]
+    # فارسی‌سازی تیتر ستون‌ها برای پسرخاله‌ات
+    column_labels = {
+        Item.id: "کد",
+        Item.name: "نام محصول",
+        Item.price: "قیمت (تومان)",
+        Item.description: "توضیحات",
+        Item.image_url: "آدرس عکس",
+        Item.category_id: "شناسه دسته‌بندی"
+    }
+    # قابلیت جستجو بر اساس نام محصول
+    column_searchable_list = [Item.name]
+    # قابلیت مرتب‌سازی بر اساس قیمت و کد
+    column_sortable_list = [Item.price, Item.id]
+    name = "محصول"
+    name_plural = "محصولات منو"
+    icon = "fa-solid fa-mug-hot"
+
+admin.add_view(CategoryAdmin)
+admin.add_view(ItemAdmin)
