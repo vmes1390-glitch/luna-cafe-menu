@@ -136,38 +136,44 @@ class AdminAuth(AuthenticationBackend):
 authentication_backend = AdminAuth(secret_key="vita-secret-random-key-change-this")
 
 # راه‌اندازی داشبورد مدیریت
+# راه‌اندازی داشبورد مدیریت
 admin = Admin(
     app=app, 
     engine=engine, 
     authentication_backend=authentication_backend, 
-    title="پنل مدیریت کافه ویتا"
+    title="Cafe Vita Admin"
 )
 
 class CategoryAdmin(ModelView, model=Category):
     column_list = [Category.id, Category.name]
-    column_labels = {Category.id: "شناسه", Category.name: "نام دسته‌بندی"}
-    name = "دسته‌بندی"
-    name_plural = "دسته‌بندی‌ها"
+    column_labels = {
+        Category.id: "ID", 
+        Category.name: "Category Name"
+    }
+    name = "Category"
+    name_plural = "Categories"
     icon = "fa-solid fa-layer-group"
 
 class ItemAdmin(ModelView, model=Item):
     # ستون‌های جدول
     column_list = [Item.id, Item.name, Item.price, Item.category_id]
-    # فارسی‌سازی تیتر ستون‌ها برای پسرخاله‌ات
+    
+    # برچسب‌های انگلیسی و مرتب
     column_labels = {
-        Item.id: "کد",
-        Item.name: "نام محصول",
-        Item.price: "قیمت (تومان)",
-        Item.description: "توضیحات",
-        Item.image_url: "آدرس عکس",
-        Item.category_id: "شناسه دسته‌بندی"
+        Item.id: "ID",
+        Item.name: "Item Name",
+        Item.price: "Price (Tomans)",
+        Item.description: "Description",
+        Item.image_url: "Image URL",
+        Item.category_id: "Category ID"
     }
-    # قابلیت جستجو بر اساس نام محصول
+    
+    # جستجو و مرتب‌سازی
     column_searchable_list = [Item.name]
-    # قابلیت مرتب‌سازی بر اساس قیمت و کد
     column_sortable_list = [Item.price, Item.id]
-    name = "محصول"
-    name_plural = "محصولات منو"
+    
+    name = "Item"
+    name_plural = "Menu Items"
     icon = "fa-solid fa-mug-hot"
 
 admin.add_view(CategoryAdmin)
