@@ -19,6 +19,9 @@ class Category(Base):
         cascade="all, delete-orphan" # اگر دسته‌بندی پاک شد، محصولاتش هم پاک بشن
     )
 
+    def __str__(self):
+        return self.name
+
 class Item(Base):
     __tablename__ = "items"
 
