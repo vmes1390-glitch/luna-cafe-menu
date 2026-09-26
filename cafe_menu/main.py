@@ -42,7 +42,7 @@ app.add_middleware(
 # ۱. دریافت تمام دسته‌بندی‌ها به همراه محصولات
 @app.get("/categories/", response_model=List[schemas.CategoryResponse], tags=["Categories"])
 def get_categories(db: Session = Depends(get_db)):
-    return db.query(models.Category).all()
+    return db.query(models.Category).order_by(models.Category.display_order.asc(), models.Category.id.asc()).all()
 
 # ۲. ایجاد یک دسته‌بندی جدید
 @app.post("/categories/", response_model=schemas.CategoryResponse, tags=["Categories"])
@@ -145,10 +145,11 @@ admin = Admin(
 )
 
 class CategoryAdmin(ModelView, model=Category):
-    column_list = [Category.id, Category.name]
+    column_list = [Category.id, Category.name, Category.display_order]
     column_labels = {
         Category.id: "ID", 
-        Category.name: "Category Name"
+        Category.name: "Category Name",
+        Category.display_order: "Order"
     }
 
     form_excluded_columns = [Category.items]
@@ -156,6 +157,8 @@ class CategoryAdmin(ModelView, model=Category):
     name = "Category"
     name_plural = "Categories"
     icon = "fa-solid fa-layer-group"
+
+    column_default_sort = [(Category.display_order, False)]
 
 class ItemAdmin(ModelView, model=Item):
     # ستون‌های جدول

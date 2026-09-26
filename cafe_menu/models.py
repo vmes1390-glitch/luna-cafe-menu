@@ -12,6 +12,7 @@ class Category(Base):
     # ستون‌های جدول دسته‌بندی
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(50), unique=True, index=True)
+    display_order: Mapped[int] = mapped_column(Integer, default=0)
 
     # برقراری رابطه یک‌به‌چند: یک دسته‌بندی می‌تونه چندین محصول داشته باشه
     items: Mapped[List["Item"]] = relationship(
