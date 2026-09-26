@@ -91,16 +91,16 @@
             </div>
         </div>
 
-        <!-- 2. نوار دسته‌بندی‌ها (Sticky Navigation) -->
-        <div id="sticky-nav" class="sticky top-0 z-40 py-3 px-4 transition-all duration-300">
+        <!-- 2. نوار دسته‌بندی‌ها (دارای پس‌زمینه دانه قهوه برای حفظ پیوستگی طرح و جلوگیری از محو شدن) -->
+        <div id="sticky-nav" class="sticky top-0 z-40 py-3 px-4 coffee-bg shadow-sm">
             <div id="category-nav" class="flex overflow-x-auto gap-3 no-scrollbar pb-1">
-                <!-- دکمه‌های دسته‌بندی توسط جاوااسکریپت لود میشن -->
+                <!-- دکمه‌های دسته‌بندی توسط جاوااسکریپت لود می‌شوند -->
             </div>
         </div>
 
         <!-- 3. لیست محصولات -->
         <div id="menu-content" class="px-4 py-4 pb-6">
-            <!-- محتوای کارت‌ها توسط جاوااسکریپت لود میشن -->
+            <!-- محتوای کارت‌ها توسط جاوااسکریپت لود می‌شوند -->
         </div>
 
         <!-- 4. فوتر -->
@@ -108,7 +108,7 @@
             <p class="text-[10px] text-stone-600 font-bold">توسعه داده شده با ❤️ برای کافه ویتا</p>
         </footer>
 
-        <!-- دکمه شناور (FAB) -->
+        <!-- دکمه شناور رفتن به بالا (FAB) -->
         <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
                 class="fixed bottom-6 left-4 w-12 h-12 bg-brand text-white rounded-full shadow-lg flex items-center justify-center text-xl z-50 hover:bg-brand-dark active:scale-90 transition-all">
             ↑
@@ -133,7 +133,7 @@
                 categories.forEach((category) => {
                     if (category.items.length === 0) return;
 
-                    // ساخت دکمه‌های نوار Sticky
+                    // ساخت دکمه‌های نوار دسته‌بندی
                     navDiv.innerHTML += `
                         <a href="#cat-${category.id}"
                            class="cat-btn whitespace-nowrap px-5 py-2 rounded-full text-[13px] font-bold bg-cream text-stone-700 shadow-sm border border-[#cfae8b]/40
@@ -142,10 +142,10 @@
                         </a>
                     `;
 
-                    // ساخت بخش هر دسته‌بندی
+                    // ساخت عنوان هر بخش دسته‌بندی بدون خط اضافه
                     let categoryHTML = `
                         <div id="cat-${category.id}" class="scroll-mt-[75px] mb-8">
-                            <div class="flex items-center gap-3 mb-5 pl-2">
+                            <div class="mb-5 pl-2">
                                 <h2 class="text-lg font-bold text-stone-900">${category.name}</h2>
                             </div>
                     `;
@@ -176,7 +176,7 @@
                     menuDiv.innerHTML += categoryHTML;
                 });
 
-                // پنهان کردن Splash Screen
+                // پنهان کردن انیمیشن ورودی (Splash Screen)
                 setTimeout(() => {
                     const splash = document.getElementById('splash');
                     if (splash) {
@@ -195,16 +195,6 @@
         }
 
         fetchMenu();
-
-        // افکت مات شدن نوار دسته‌بندی هنگام اسکرول
-        window.addEventListener('scroll', () => {
-            const nav = document.getElementById('sticky-nav');
-            if (window.scrollY > 200) {
-                nav.classList.add('bg-[#E2C7A8]/95', 'backdrop-blur-md', 'shadow-sm');
-            } else {
-                nav.classList.remove('bg-[#E2C7A8]/95', 'backdrop-blur-md', 'shadow-sm');
-            }
-        });
     </script>
 </body>
 </html>
