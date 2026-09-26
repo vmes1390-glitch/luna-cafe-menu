@@ -69,10 +69,12 @@
             </div>
         </div>
 
+        <!-- باکس جستجو با حذف استایل‌های مزاحم مرورگر -->
         <div class="px-4 mb-3">
             <div class="relative flex items-center">
                 <input type="text" id="search-input" placeholder="جستجوی نام نوشیدنی یا ترکیبات..."
-                       class="w-full bg-cream text-stone-800 text-xs font-bold rounded-2xl py-3 pr-10 pl-9 border border-[#cfae8b]/60 focus:outline-none focus:border-brand transition-all placeholder:text-stone-400 placeholder:font-normal shadow-sm">
+                       style="-webkit-tap-highlight-color: transparent;"
+                       class="w-full bg-cream text-stone-800 text-xs font-bold rounded-2xl py-3 pr-10 pl-9 border border-[#cfae8b]/60 appearance-none outline-none focus:outline-none focus:ring-0 focus:border-brand transition-colors duration-300 placeholder:text-stone-400 placeholder:font-normal shadow-sm">
                 <span class="absolute right-3.5 text-stone-400 text-sm pointer-events-none">🔍</span>
                 <button id="clear-search" onclick="clearSearch()" class="absolute left-3 text-stone-500 active:text-stone-800 hidden text-xs font-bold w-5 h-5 rounded-full bg-stone-300/60 items-center justify-center active:scale-90 transition-all">✕</button>
             </div>
@@ -160,6 +162,27 @@
                     </button>
                     <button onclick="clearCart()" class="px-4 py-3 bg-stone-300/70 text-stone-700 font-bold text-xs rounded-2xl active:bg-red-100 active:text-red-700 active:scale-95 transition-all">پاک کردن</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- پنجره هشدار شیک برای پاک کردن سبد (Custom Confirm Modal) -->
+    <div id="confirm-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[70] hidden items-center justify-center opacity-0 transition-opacity duration-300">
+        <div id="confirm-box" class="bg-[#ECD9C5] rounded-3xl max-w-[85%] w-full mx-auto p-6 flex flex-col shadow-2xl border border-[#cfae8b] scale-95 transition-transform duration-300">
+            <div class="flex flex-col items-center text-center">
+                <div class="w-16 h-16 bg-red-100/80 text-red-500 rounded-full flex items-center justify-center text-3xl mb-4 shadow-sm border border-red-200">
+                    🗑️
+                </div>
+                <h3 class="font-bold text-lg text-stone-900 mb-1.5">پاک کردن سفارش؟</h3>
+                <p class="text-xs text-stone-600 font-medium mb-6 leading-relaxed">آیا مطمئن هستید که می‌خواهید کل لیست سفارش را پاک کنید؟ این کار قابل بازگشت نیست.</p>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="closeConfirmModal()" class="flex-1 py-3.5 bg-stone-300/70 text-stone-700 font-bold text-sm rounded-2xl active:bg-stone-300 active:scale-95 transition-all">
+                    انصراف
+                </button>
+                <button onclick="executeClearCart()" class="flex-1 py-3.5 bg-red-500 text-white font-bold text-sm rounded-2xl shadow active:bg-red-600 active:scale-95 transition-all">
+                    بله، پاک کن
+                </button>
             </div>
         </div>
     </div>
@@ -270,14 +293,40 @@
             updateCartUI();
         }
 
-        // --- اضافه شدن پیام تایید به دکمه پاک کردن ---
+        // توابع مربوط به مودال هشدار شیک به جای confirm
         function clearCart() {
-            if (confirm("آیا از پاک کردن کل لیست سفارش اطمینان دارید؟")) {
-                cart = {};
-                saveCart();
-                updateCartUI();
-                closeCartModal();
-            }
+            const modal = document.getElementById('confirm-modal');
+            const box = document.getElementById('confirm-box');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            // تاخیر کوتاه برای اعمال انیمیشن
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.classList.add('opacity-100');
+                box.classList.remove('scale-95');
+                box.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeConfirmModal() {
+            const modal = document.getElementById('confirm-modal');
+            const box = document.getElementById('confirm-box');
+            modal.classList.remove('opacity-100');
+            modal.classList.add('opacity-0');
+            box.classList.remove('scale-100');
+            box.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        }
+
+        function executeClearCart() {
+            cart = {};
+            saveCart();
+            updateCartUI();
+            closeConfirmModal();
+            closeCartModal();
         }
 
         function updateCartUI() {
