@@ -91,8 +91,8 @@
             </div>
         </div>
 
-        <!-- 2. نوار دسته‌بندی‌ها (سنجاق‌شده به بالا، کاملاً شفاف و بدون بک‌گراند یا خط) -->
-        <div id="sticky-nav" class="sticky top-0 z-40 py-3 px-4">
+        <!-- 2. نوار دسته‌بندی‌ها (کاملاً شفاف، بدون کادر و اسکرول عادی همگام با صفحه) -->
+        <div class="py-2 px-4 mb-3">
             <div id="category-nav" class="flex overflow-x-auto gap-3 no-scrollbar pb-1">
                 <!-- دکمه‌های دسته‌بندی توسط جاوااسکریپت لود می‌شوند -->
             </div>
@@ -108,7 +108,7 @@
             <p class="text-[10px] text-stone-600 font-bold">توسعه داده شده با ❤️ برای کافه ویتا</p>
         </footer>
 
-        <!-- دکمه شناور برگشت به بالا (FAB) -->
+        <!-- دکمه شناور بازگشت سریع به بالای صفحه (FAB) -->
         <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
                 class="fixed bottom-6 left-4 w-12 h-12 bg-brand text-white rounded-full shadow-lg flex items-center justify-center text-xl z-50 hover:bg-brand-dark active:scale-90 transition-all">
             ↑
@@ -133,7 +133,7 @@
                 categories.forEach((category) => {
                     if (category.items.length === 0) return;
 
-                    // ساخت دکمه‌های نوار دسته‌بندی
+                    // ساخت دکمه‌های دسته‌بندی
                     navDiv.innerHTML += `
                         <a href="#cat-${category.id}"
                            class="cat-btn whitespace-nowrap px-5 py-2 rounded-full text-[13px] font-bold bg-cream text-stone-700 shadow-sm border border-[#cfae8b]/40
@@ -142,9 +142,9 @@
                         </a>
                     `;
 
-                    // ساخت عنوان دسته‌بندی با فاصله اسکرول مناسب برای نوار سنجاق‌شده
+                    // ساخت بخش هر دسته‌بندی (فاصله بهینه شده برای اسکرول طبیعی)
                     let categoryHTML = `
-                        <div id="cat-${category.id}" class="scroll-mt-[70px] mb-8">
+                        <div id="cat-${category.id}" class="scroll-mt-4 mb-8">
                             <div class="mb-5 pl-2">
                                 <h2 class="text-lg font-bold text-stone-900">${category.name}</h2>
                             </div>
