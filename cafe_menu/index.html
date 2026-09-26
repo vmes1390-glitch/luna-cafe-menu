@@ -82,23 +82,35 @@
             </div>
         </header>
 
-        <div class="text-center px-4 mb-6 mt-14">
+        <div class="text-center px-4 mb-5 mt-14">
             <h1 class="text-2xl font-bold text-stone-800">کافه ویتا</h1>
             <p class="text-sm text-stone-600 mt-1.5 font-medium">لحظاتی گرم و دلنشین با بهترین ترکیب‌ها</p>
-            <div class="flex justify-center mt-4 text-stone-500 text-[11px] font-bold">
+            <div class="flex justify-center mt-3 text-stone-500 text-[11px] font-bold">
                 <span class="flex items-center gap-1">📱 Instagram: @VitaCafe</span>
             </div>
         </div>
 
+        <!-- نوار جستجوی زنده (Live Search) -->
+        <div class="px-4 mb-3">
+            <div class="relative flex items-center">
+                <input type="text" id="search-input"
+                       placeholder="جستجوی نام نوشیدنی یا ترکیبات..."
+                       class="w-full bg-cream text-stone-800 text-xs font-bold rounded-2xl py-3 pr-10 pl-9 border border-[#cfae8b]/60 focus:outline-none focus:border-brand transition-all placeholder:text-stone-400 placeholder:font-normal shadow-sm">
+                <span class="absolute right-3.5 text-stone-400 text-sm pointer-events-none">🔍</span>
+                <button id="clear-search" onclick="clearSearch()"
+                        class="absolute left-3 text-stone-500 hover:text-stone-800 hidden text-xs font-bold w-5 h-5 rounded-full bg-stone-300/60 items-center justify-center active:scale-90">✕</button>
+            </div>
+        </div>
+
         <!-- ۲. نوار دسته‌بندی‌ها (کاملاً شفاف و اسکرول همگام) -->
-        <div class="py-2 px-4 mb-3">
+        <div id="category-nav-wrapper" class="py-2 px-4 mb-3">
             <div id="category-nav" class="flex overflow-x-auto gap-3 no-scrollbar pb-1">
                 <!-- دکمه‌ها توسط جاوااسکریپت لود می‌شوند -->
             </div>
         </div>
 
         <!-- ۳. لیست محصولات -->
-        <div id="menu-content" class="px-4 py-4 pb-12">
+        <div id="menu-content" class="px-4 py-2 pb-12">
             <!-- کارت‌ها توسط جاوااسکریپت لود می‌شوند -->
         </div>
 
@@ -130,33 +142,28 @@
 
     <!-- ۶. پنجره کشویی فاکتور و مدیریت سفارش (Bottom Sheet Modal) -->
     <div id="cart-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex-col justify-end transition-opacity duration-300">
-        <!-- کلیک روی فضای خالی برای بستن -->
         <div class="flex-grow" onclick="closeCartModal()"></div>
 
         <div class="bg-[#ECD9C5] rounded-t-3xl max-w-md w-full mx-auto p-5 max-h-[85vh] flex flex-col shadow-2xl border-t border-[#cfae8b]">
-            <!-- هدر مودال -->
             <div class="flex items-center justify-between pb-3 border-b border-[#cfae8b]/50">
                 <div class="flex items-center gap-2">
                     <span class="text-xl">☕</span>
-                    <h3 class="font-bold text-base text-stone-900" id="modal-title">لیست سفارش کافه ویتا</h3>
+                    <h3 class="font-bold text-base text-stone-900">لیست سفارش کافه ویتا</h3>
                 </div>
                 <button onclick="closeCartModal()" class="w-8 h-8 rounded-full bg-stone-300/60 text-stone-700 flex items-center justify-center text-sm font-bold active:scale-90">✕</button>
             </div>
 
-            <!-- لیست آیتم‌ها برای ویرایش تعداد -->
             <div id="modal-items-container" class="overflow-y-auto my-3 max-h-[45vh] space-y-2.5 no-scrollbar">
-                <!-- آیتم‌ها اینجا رندر می‌شوند -->
+                <!-- آیتم‌ها برای ویرایش -->
             </div>
 
-            <!-- بخش نمایش درشت به سالن‌کار -->
             <div id="waiter-view" class="hidden my-3 p-4 bg-white/70 rounded-2xl border border-[#cfae8b]/60">
                 <p class="text-xs text-stone-600 font-bold mb-3 text-center">📱 لطفاً این صفحه را به سالن‌کار نشان دهید:</p>
                 <div id="waiter-items-list" class="space-y-2 text-stone-900 font-bold text-base leading-relaxed">
-                    <!-- متن‌های خلاصه سفارش اینجا قرار می‌گیرند -->
+                    <!-- متن‌های خلاصه سفارش -->
                 </div>
             </div>
 
-            <!-- بخش فاکتور و دکمه‌های عملیاتی -->
             <div class="pt-3 border-t border-[#cfae8b]/50">
                 <div class="flex items-center justify-between mb-4">
                     <span class="text-sm font-bold text-stone-700">جمع کل سفارش:</span>
@@ -180,9 +187,10 @@
 
     <script>
         const API_URL = '/categories/';
+        let rawCategories = [];
         let cart = {};
 
-        // بارگذاری سفارش‌های قبلی از حافظه مرورگر
+        // بازیابی سبد سفارش از حافظه
         try {
             const savedCart = localStorage.getItem('vita_cafe_cart');
             if (savedCart) cart = JSON.parse(savedCart);
@@ -196,7 +204,6 @@
             } catch(e) {}
         }
 
-        // افزودن آیتم به سفارش
         function addToCart(id, name, price) {
             if (!cart[id]) {
                 cart[id] = { id, name, price, count: 0 };
@@ -206,7 +213,6 @@
             updateCartUI();
         }
 
-        // کاهش تعداد آیتم
         function decreaseCart(id) {
             if (cart[id]) {
                 cart[id].count--;
@@ -218,7 +224,6 @@
             updateCartUI();
         }
 
-        // پاک کردن کامل سبد
         function clearCart() {
             cart = {};
             saveCart();
@@ -226,7 +231,6 @@
             closeCartModal();
         }
 
-        // بروزرسانی رابط کاربری نوار و مودال
         function updateCartUI() {
             let totalCount = 0;
             let totalPrice = 0;
@@ -269,7 +273,6 @@
             renderModalItems();
         }
 
-        // رندر کردن لیست آیتم‌ها داخل مودال
         function renderModalItems() {
             const container = document.getElementById('modal-items-container');
             const waiterList = document.getElementById('waiter-items-list');
@@ -281,7 +284,6 @@
                 const itemTotal = new Intl.NumberFormat('fa-IR').format(item.price * item.count);
                 const countFa = new Intl.NumberFormat('fa-IR').format(item.count);
 
-                // آیتم برای لیست ویرایش
                 container.innerHTML += `
                     <div class="flex items-center justify-between p-2.5 bg-white/50 rounded-xl border border-[#cfae8b]/40">
                         <div>
@@ -296,7 +298,6 @@
                     </div>
                 `;
 
-                // آیتم برای حالت نمایش به سالن‌کار
                 waiterList.innerHTML += `
                     <div class="flex justify-between items-center py-1 border-b border-stone-200/60 last:border-0">
                         <span>• ${item.name}</span>
@@ -343,21 +344,31 @@
             }
         }
 
-        // لود منو از سرور
-        async function fetchMenu() {
-            try {
-                const response = await fetch(API_URL);
-                const categories = await response.json();
+        // رندر کردن منو و دسته‌ها
+        function renderMenu(categories, isSearching = false) {
+            const navDiv = document.getElementById('category-nav');
+            const menuDiv = document.getElementById('menu-content');
 
-                const navDiv = document.getElementById('category-nav');
-                const menuDiv = document.getElementById('menu-content');
-
+            if (!isSearching) {
                 navDiv.innerHTML = '';
-                menuDiv.innerHTML = '';
+            }
+            menuDiv.innerHTML = '';
 
-                categories.forEach((category) => {
-                    if (category.items.length === 0) return;
+            if (categories.length === 0) {
+                menuDiv.innerHTML = `
+                    <div class="text-center py-14 px-4 bg-cream/70 rounded-2xl border border-[#cfae8b]/40 mt-4">
+                        <span class="text-4xl block mb-2">☕</span>
+                        <p class="font-bold text-stone-800 text-sm">موردی با این نام پیدا نشد</p>
+                        <p class="text-stone-500 text-xs mt-1">املا یا عنوان دیگری را امتحان کنید.</p>
+                    </div>
+                `;
+                return;
+            }
 
+            categories.forEach((category) => {
+                if (category.items.length === 0) return;
+
+                if (!isSearching) {
                     navDiv.innerHTML += `
                         <a href="#cat-${category.id}"
                            class="cat-btn whitespace-nowrap px-5 py-2 rounded-full text-[13px] font-bold bg-cream text-stone-700 shadow-sm border border-[#cfae8b]/40
@@ -365,45 +376,100 @@
                             ${category.name}
                         </a>
                     `;
+                }
 
-                    let categoryHTML = `
-                        <div id="cat-${category.id}" class="scroll-mt-4 mb-8">
-                            <div class="mb-5 pl-2">
-                                <h2 class="text-lg font-bold text-stone-900">${category.name}</h2>
+                let categoryHTML = `
+                    <div id="cat-${category.id}" class="scroll-mt-4 mb-8">
+                        <div class="mb-4 pl-2">
+                            <h2 class="text-lg font-bold text-stone-900">${category.name}</h2>
+                        </div>
+                `;
+
+                category.items.forEach(item => {
+                    let priceFormat = new Intl.NumberFormat('fa-IR').format(item.price);
+                    categoryHTML += `
+                        <div class="flex flex-row bg-cream rounded-2xl shadow-sm mb-4 p-3 border border-[#cfae8b]/50 active:scale-[0.99] transition-transform">
+                            <div class="w-20 h-20 rounded-xl overflow-hidden shrink-0 ms-3 border border-[#cfae8b]/30 bg-cream">
+                                <img src="${item.image_url}" alt="${item.name}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/80'">
                             </div>
+                            <div class="flex flex-col justify-between flex-grow">
+                                <div>
+                                    <h3 class="font-bold text-sm text-stone-900">${item.name}</h3>
+                                    <p class="text-[11px] text-stone-600 mt-1 line-clamp-2 leading-relaxed">${item.description || ''}</p>
+                                </div>
+                                <div class="mt-2.5 flex items-center justify-between">
+                                    <div class="flex items-baseline gap-1">
+                                        <span class="text-brand font-bold text-base tracking-tight">${priceFormat}</span>
+                                        <span class="text-[10px] text-brand/80 font-bold">تومان</span>
+                                    </div>
+                                    <button onclick="addToCart(${item.id}, '${item.name.replace(/'/g, "\\'")}', ${item.price})"
+                                            class="flex items-center gap-1 bg-brand/10 hover:bg-brand text-brand hover:text-white border border-brand/30 px-3 py-1 rounded-full text-xs font-bold transition-all active:scale-90 shadow-sm">
+                                        <span>+</span>
+                                        <span>افزودن</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     `;
-
-                    category.items.forEach(item => {
-                        let priceFormat = new Intl.NumberFormat('fa-IR').format(item.price);
-                        categoryHTML += `
-                            <div class="flex flex-row bg-cream rounded-2xl shadow-sm mb-4 p-3 border border-[#cfae8b]/50 active:scale-[0.99] transition-transform">
-                                <div class="w-20 h-20 rounded-xl overflow-hidden shrink-0 ms-3 border border-[#cfae8b]/30 bg-cream">
-                                    <img src="${item.image_url}" alt="${item.name}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/80'">
-                                </div>
-                                <div class="flex flex-col justify-between flex-grow">
-                                    <div>
-                                        <h3 class="font-bold text-sm text-stone-900">${item.name}</h3>
-                                        <p class="text-[11px] text-stone-600 mt-1 line-clamp-2 leading-relaxed">${item.description || ''}</p>
-                                    </div>
-                                    <div class="mt-2.5 flex items-center justify-between">
-                                        <div class="flex items-baseline gap-1">
-                                            <span class="text-brand font-bold text-base tracking-tight">${priceFormat}</span>
-                                            <span class="text-[10px] text-brand/80 font-bold">تومان</span>
-                                        </div>
-                                        <button onclick="addToCart(${item.id}, '${item.name.replace(/'/g, "\\'")}', ${item.price})"
-                                                class="flex items-center gap-1 bg-brand/10 hover:bg-brand text-brand hover:text-white border border-brand/30 px-3 py-1 rounded-full text-xs font-bold transition-all active:scale-90 shadow-sm">
-                                            <span>+</span>
-                                            <span>افزودن</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    });
-
-                    categoryHTML += `</div>`;
-                    menuDiv.innerHTML += categoryHTML;
                 });
+
+                categoryHTML += `</div>`;
+                menuDiv.innerHTML += categoryHTML;
+            });
+        }
+
+        // عملکرد جستجو و فیلتر
+        const searchInput = document.getElementById('search-input');
+        const clearBtn = document.getElementById('clear-search');
+        const catNavWrapper = document.getElementById('category-nav-wrapper');
+
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.trim().toLowerCase();
+            if (query.length > 0) {
+                clearBtn.classList.remove('hidden');
+                clearBtn.classList.add('flex');
+                catNavWrapper.classList.add('hidden'); // هنگام جستجو نوار دسته‌ها برای خلوت شدن مخفی می‌شود
+            } else {
+                clearBtn.classList.add('hidden');
+                clearBtn.classList.remove('flex');
+                catNavWrapper.classList.remove('hidden');
+            }
+            filterMenu(query);
+        });
+
+        function clearSearch() {
+            searchInput.value = '';
+            clearBtn.classList.add('hidden');
+            clearBtn.classList.remove('flex');
+            catNavWrapper.classList.remove('hidden');
+            renderMenu(rawCategories, false);
+            searchInput.focus();
+        }
+
+        function filterMenu(query) {
+            if (!query) {
+                renderMenu(rawCategories, false);
+                return;
+            }
+
+            const filteredCategories = rawCategories.map(cat => {
+                const matchedItems = cat.items.filter(item =>
+                    item.name.toLowerCase().includes(query) ||
+                    (item.description && item.description.toLowerCase().includes(query))
+                );
+                return { ...cat, items: matchedItems };
+            }).filter(cat => cat.items.length > 0);
+
+            renderMenu(filteredCategories, true);
+        }
+
+        // دریافت اطلاعات از سرور
+        async function fetchMenu() {
+            try {
+                const response = await fetch(API_URL);
+                rawCategories = await response.json();
+
+                renderMenu(rawCategories, false);
 
                 // پنهان کردن Splash Screen
                 setTimeout(() => {
