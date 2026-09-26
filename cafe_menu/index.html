@@ -7,25 +7,16 @@
 
     <!-- فونت وزیرمتن -->
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.0.0/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
-
-    <!-- اضافه کردن Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- تنظیمات اختصاصی Tailwind برای فونت و رنگ‌ها -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Vazirmatn', 'sans-serif'],
-                    },
+                    fontFamily: { sans: ['Vazirmatn', 'sans-serif'] },
                     colors: {
-                        brand: {
-                            light: '#ffedd5',
-                            DEFAULT: '#ea580c', // نارنجی تأکیدی
-                            dark: '#c2410c',
-                        },
-                        cream: '#ECD9C5' // رنگ کرمی اختصاصی برای کارت‌ها و دکمه‌ها
+                        brand: { light: '#ffedd5', DEFAULT: '#ea580c', dark: '#c2410c' },
+                        cream: '#ECD9C5'
                     }
                 }
             }
@@ -33,18 +24,12 @@
     </script>
 
     <style>
-        /* اسکرول نرم برای کل صفحه */
         html { scroll-behavior: smooth; }
-
         body { font-family: 'Vazirmatn', sans-serif; }
-
-        /* مخفی کردن اسکرول‌بار */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        /* انیمیشن پالس برای Splash Screen */
         .pulse-slow { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-
+        
         /* بک‌گراند اختصاصی دانه قهوه با رنگ چوب صندلی‌ها */
         .coffee-bg {
             background-color: #E2C7A8;
@@ -54,7 +39,6 @@
 </head>
 <body class="coffee-bg text-stone-800 antialiased relative">
 
-    <!-- ۰. انیمیشن ورودی (Splash Screen) -->
     <div id="splash" class="fixed inset-0 coffee-bg z-50 flex flex-col items-center justify-center transition-opacity duration-700 ease-in-out">
         <div class="pulse-slow flex flex-col items-center">
             <span class="text-7xl mb-4">☕</span>
@@ -63,21 +47,16 @@
         </div>
     </div>
 
-    <!-- کانتینر اصلی اپلیکیشن -->
     <div class="max-w-md mx-auto relative coffee-bg min-h-screen shadow-2xl overflow-hidden pb-16">
 
-        <!-- ۱. هدر (عکس مستطیلی کاور + لوگوی گرد) -->
         <header class="relative mb-12">
-            <div class="h-44 bg-cover relative" style="background-image: url('/static/banner.jpg'); background-position: center 20%;">
+            <!-- تنظیم کادر عکس برای حذف موزاییک‌های پایین -->
+            <div class="h-44 bg-cover relative" style="background-image: url('/static/banner.jpg'); background-position: center 15%;">
                 <div class="absolute inset-0 bg-black/20"></div>
             </div>
-
             <div class="absolute -bottom-10 left-1/2 transform -translate-x-1/2">
                 <div class="bg-cream p-1 rounded-full shadow-lg overflow-hidden">
-                    <img src="/static/logo.png"
-                         style="transform: scale(1.1);"
-                         class="w-24 h-24 rounded-full object-cover"
-                         alt="Logo">
+                    <img src="/static/logo.png" style="transform: scale(1.1);" class="w-24 h-24 rounded-full object-cover" alt="Logo">
                 </div>
             </div>
         </header>
@@ -90,44 +69,32 @@
             </div>
         </div>
 
-        <!-- نوار جستجوی زنده (Live Search) -->
         <div class="px-4 mb-3">
             <div class="relative flex items-center">
-                <input type="text" id="search-input"
-                       placeholder="جستجوی نام نوشیدنی یا ترکیبات..."
+                <input type="text" id="search-input" placeholder="جستجوی نام نوشیدنی یا ترکیبات..."
                        class="w-full bg-cream text-stone-800 text-xs font-bold rounded-2xl py-3 pr-10 pl-9 border border-[#cfae8b]/60 focus:outline-none focus:border-brand transition-all placeholder:text-stone-400 placeholder:font-normal shadow-sm">
                 <span class="absolute right-3.5 text-stone-400 text-sm pointer-events-none">🔍</span>
-                <button id="clear-search" onclick="clearSearch()"
-                        class="absolute left-3 text-stone-500 hover:text-stone-800 hidden text-xs font-bold w-5 h-5 rounded-full bg-stone-300/60 items-center justify-center active:scale-90">✕</button>
+                <button id="clear-search" onclick="clearSearch()" class="absolute left-3 text-stone-500 hover:text-stone-800 hidden text-xs font-bold w-5 h-5 rounded-full bg-stone-300/60 items-center justify-center active:scale-90">✕</button>
             </div>
         </div>
 
-        <!-- ۲. نوار دسته‌بندی‌ها (کاملاً شفاف و اسکرول همگام) -->
         <div id="category-nav-wrapper" class="py-2 px-4 mb-3">
-            <div id="category-nav" class="flex overflow-x-auto gap-3 no-scrollbar pb-1">
-                <!-- دکمه‌ها توسط جاوااسکریپت لود می‌شوند -->
-            </div>
+            <div id="category-nav" class="flex overflow-x-auto gap-3 no-scrollbar pb-1"></div>
         </div>
 
-        <!-- ۳. لیست محصولات -->
-        <div id="menu-content" class="px-4 py-2 pb-12">
-            <!-- کارت‌ها توسط جاوااسکریپت لود می‌شوند -->
-        </div>
+        <div id="menu-content" class="px-4 py-2 pb-12"></div>
 
-        <!-- ۴. فوتر -->
         <footer class="text-center py-6 mt-4">
             <p class="text-[10px] text-stone-600 font-bold">توسعه داده شده با ❤️ برای کافه ویتا</p>
         </footer>
-        
-        <!-- دکمه شناور برگشت به بالا (FAB) -->
+
         <button id="fab-up" onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
                 class="fixed bottom-6 left-4 w-11 h-11 bg-brand text-white rounded-full shadow-lg flex items-center justify-center text-lg z-30 hover:bg-brand-dark active:scale-90 transition-all duration-300">
             ↑
         </button>
-
     </div>
 
-    <!-- ۵. نوار شناور کپسولی سفارش (Bottom Order Tray) -->
+    <!-- نوار شناور سبد -->
     <div id="cart-bar" onclick="openCartModal()"
          class="fixed bottom-5 left-4 right-4 max-w-md mx-auto bg-stone-900 text-cream px-4 py-3 rounded-2xl shadow-2xl hidden items-center justify-between z-40 cursor-pointer border border-[#cfae8b]/40 active:scale-[0.99] transition-all">
         <div class="flex items-center gap-2.5">
@@ -140,10 +107,33 @@
         </div>
     </div>
 
-    <!-- ۶. پنجره کشویی فاکتور و مدیریت سفارش (Bottom Sheet Modal) -->
+    <!-- پنجره افزودنی‌ها (Add-ons Modal) -->
+    <div id="addon-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex-col justify-end transition-opacity duration-300">
+        <div class="flex-grow" onclick="closeAddonModal()"></div>
+        <div class="bg-[#ECD9C5] rounded-t-3xl max-w-md w-full mx-auto p-5 flex flex-col shadow-2xl border-t border-[#cfae8b]">
+            <div class="flex items-center justify-between pb-3 border-b border-[#cfae8b]/50">
+                <h3 class="font-bold text-base text-stone-900">شخصی‌سازی سفارش</h3>
+                <button onclick="closeAddonModal()" class="w-8 h-8 rounded-full bg-stone-300/60 text-stone-700 flex items-center justify-center text-sm font-bold active:scale-90">✕</button>
+            </div>
+            
+            <div class="my-4">
+                <p id="addon-item-name" class="font-bold text-brand text-lg mb-1"></p>
+                <p class="text-xs text-stone-600 font-bold mb-3">افزودنی‌های دلخواه خود را انتخاب کنید (اختیاری):</p>
+                
+                <div id="addons-list" class="space-y-2 max-h-[40vh] overflow-y-auto no-scrollbar pb-2">
+                    <!-- چک‌باکس‌ها با جاوااسکریپت تولید می‌شوند -->
+                </div>
+            </div>
+
+            <button onclick="confirmAndAddToCart()" class="w-full py-3.5 bg-brand text-white font-bold text-sm rounded-2xl shadow-lg hover:bg-brand-dark active:scale-[0.98] transition-all">
+                تأیید و افزودن به سبد
+            </button>
+        </div>
+    </div>
+
+    <!-- پنجره فاکتور (Cart Modal) -->
     <div id="cart-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex-col justify-end transition-opacity duration-300">
         <div class="flex-grow" onclick="closeCartModal()"></div>
-
         <div class="bg-[#ECD9C5] rounded-t-3xl max-w-md w-full mx-auto p-5 max-h-[85vh] flex flex-col shadow-2xl border-t border-[#cfae8b]">
             <div class="flex items-center justify-between pb-3 border-b border-[#cfae8b]/50">
                 <div class="flex items-center gap-2">
@@ -153,15 +143,10 @@
                 <button onclick="closeCartModal()" class="w-8 h-8 rounded-full bg-stone-300/60 text-stone-700 flex items-center justify-center text-sm font-bold active:scale-90">✕</button>
             </div>
 
-            <div id="modal-items-container" class="overflow-y-auto my-3 max-h-[45vh] space-y-2.5 no-scrollbar">
-                <!-- آیتم‌ها برای ویرایش -->
-            </div>
+            <div id="modal-items-container" class="overflow-y-auto my-3 max-h-[45vh] space-y-2.5 no-scrollbar"></div>
 
             <div id="waiter-view" class="hidden my-3 p-4 bg-white/70 rounded-2xl border border-[#cfae8b]/60">
-                <p class="text-xs text-stone-600 font-bold mb-3 text-center">📱 لطفاً این صفحه را به سالن‌کار نشان دهید:</p>
-                <div id="waiter-items-list" class="space-y-2 text-stone-900 font-bold text-base leading-relaxed">
-                    <!-- متن‌های خلاصه سفارش -->
-                </div>
+                <div id="waiter-items-list" class="space-y-3 text-stone-900 font-bold text-base leading-relaxed"></div>
             </div>
 
             <div class="pt-3 border-t border-[#cfae8b]/50">
@@ -169,17 +154,11 @@
                     <span class="text-sm font-bold text-stone-700">جمع کل سفارش:</span>
                     <span id="modal-total-price" class="text-lg font-bold text-brand">۰ تومان</span>
                 </div>
-
                 <div class="flex gap-2">
-                    <button id="waiter-view-btn" onclick="toggleWaiterView()"
-                            class="flex-grow py-3 bg-brand text-white font-bold text-sm rounded-2xl shadow hover:bg-brand-dark active:scale-[0.98] transition-all flex items-center justify-center gap-1.5">
-                        <span>📋</span>
-                        <span id="waiter-btn-text">نمایش به سالن‌کار</span>
+                    <button id="waiter-view-btn" onclick="toggleWaiterView()" class="flex-grow py-3 bg-brand text-white font-bold text-sm rounded-2xl shadow hover:bg-brand-dark active:scale-[0.98] transition-all flex items-center justify-center gap-1.5">
+                        <span>📋</span><span id="waiter-btn-text">نمایش نهایی سفارش</span>
                     </button>
-                    <button onclick="clearCart()"
-                            class="px-4 py-3 bg-stone-300/70 text-stone-700 font-bold text-xs rounded-2xl hover:bg-red-100 hover:text-red-700 active:scale-95 transition-all">
-                        پاک کردن
-                    </button>
+                    <button onclick="clearCart()" class="px-4 py-3 bg-stone-300/70 text-stone-700 font-bold text-xs rounded-2xl hover:bg-red-100 hover:text-red-700 active:scale-95 transition-all">پاک کردن</button>
                 </div>
             </div>
         </div>
@@ -190,35 +169,102 @@
         let rawCategories = [];
         let cart = {};
 
-        // بازیابی سبد سفارش از حافظه
+        // تنظیمات افزودنی‌های موجود در کافه
+        const AVAILABLE_ADDONS = [
+            { id: 'v_syrup', name: 'سیروپ وانیل', price: 15000 },
+            { id: 'c_syrup', name: 'سیروپ کارامل', price: 15000 },
+            { id: 'h_syrup', name: 'سیروپ فندق', price: 15000 },
+            { id: 'ex_shot', name: 'شات اضافه اسپرسو', price: 25000 },
+            { id: 'soy_milk', name: 'شیر سویا', price: 30000 }
+        ];
+        let currentItemForAddon = null;
+
         try {
             const savedCart = localStorage.getItem('vita_cafe_cart');
             if (savedCart) cart = JSON.parse(savedCart);
-        } catch(e) {
-            cart = {};
-        }
+        } catch(e) { cart = {}; }
 
         function saveCart() {
-            try {
-                localStorage.setItem('vita_cafe_cart', JSON.stringify(cart));
-            } catch(e) {}
+            try { localStorage.setItem('vita_cafe_cart', JSON.stringify(cart)); } catch(e) {}
         }
 
-        function addToCart(id, name, price) {
-            if (!cart[id]) {
-                cart[id] = { id, name, price, count: 0 };
+        function openAddonModal(id, name, price) {
+            currentItemForAddon = { id, name, price };
+            document.getElementById('addon-item-name').textContent = name;
+            
+            const listDiv = document.getElementById('addons-list');
+            listDiv.innerHTML = '';
+            
+            AVAILABLE_ADDONS.forEach(addon => {
+                let priceStr = new Intl.NumberFormat('fa-IR').format(addon.price);
+                listDiv.innerHTML += `
+                    <label class="flex items-center justify-between p-3 bg-white/50 rounded-xl border border-[#cfae8b]/40 cursor-pointer active:bg-white/80 transition-colors">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" value="${addon.id}" class="addon-checkbox w-5 h-5 text-brand bg-cream border-[#cfae8b] rounded focus:ring-brand focus:ring-2">
+                            <span class="text-sm font-bold text-stone-800">${addon.name}</span>
+                        </div>
+                        <span class="text-xs text-brand font-bold">+${priceStr} تومان</span>
+                    </label>
+                `;
+            });
+
+            document.getElementById('addon-modal').classList.remove('hidden');
+            document.getElementById('addon-modal').classList.add('flex');
+        }
+
+        function closeAddonModal() {
+            document.getElementById('addon-modal').classList.add('hidden');
+            document.getElementById('addon-modal').classList.remove('flex');
+            currentItemForAddon = null;
+        }
+
+        function confirmAndAddToCart() {
+            if (!currentItemForAddon) return;
+            
+            const checkboxes = document.querySelectorAll('.addon-checkbox:checked');
+            let selectedAddons = [];
+            
+            checkboxes.forEach(cb => {
+                const addon = AVAILABLE_ADDONS.find(a => a.id === cb.value);
+                if(addon) selectedAddons.push(addon);
+            });
+
+            const addonIds = selectedAddons.map(a => a.id).sort().join('_');
+            const cartKey = addonIds ? `${currentItemForAddon.id}_${addonIds}` : `${currentItemForAddon.id}`;
+            
+            let unitPrice = currentItemForAddon.price;
+            selectedAddons.forEach(a => unitPrice += a.price);
+
+            if (!cart[cartKey]) {
+                cart[cartKey] = {
+                    cartKey: cartKey,
+                    id: currentItemForAddon.id,
+                    name: currentItemForAddon.name,
+                    basePrice: currentItemForAddon.price,
+                    unitPrice: unitPrice,
+                    addons: selectedAddons,
+                    count: 0
+                };
             }
-            cart[id].count++;
+            cart[cartKey].count++;
+            
             saveCart();
             updateCartUI();
+            closeAddonModal();
         }
 
-        function decreaseCart(id) {
-            if (cart[id]) {
-                cart[id].count--;
-                if (cart[id].count <= 0) {
-                    delete cart[id];
-                }
+        function increaseCart(cartKey) {
+            if (cart[cartKey]) {
+                cart[cartKey].count++;
+                saveCart();
+                updateCartUI();
+            }
+        }
+
+        function decreaseCart(cartKey) {
+            if (cart[cartKey]) {
+                cart[cartKey].count--;
+                if (cart[cartKey].count <= 0) delete cart[cartKey];
             }
             saveCart();
             updateCartUI();
@@ -235,99 +281,92 @@
             let totalCount = 0;
             let totalPrice = 0;
 
-            for (let id in cart) {
-                totalCount += cart[id].count;
-                totalPrice += cart[id].count * cart[id].price;
+            for (let key in cart) {
+                totalCount += cart[key].count;
+                totalPrice += cart[key].count * cart[key].unitPrice;
             }
 
             const cartBar = document.getElementById('cart-bar');
             const fabUp = document.getElementById('fab-up');
-            const cartBadge = document.getElementById('cart-badge');
-            const cartTotalPrice = document.getElementById('cart-total-price');
-            const modalTotalPrice = document.getElementById('modal-total-price');
-
+            
+            document.getElementById('cart-badge').textContent = new Intl.NumberFormat('fa-IR').format(totalCount);
+            
             const formattedPrice = new Intl.NumberFormat('fa-IR').format(totalPrice) + ' تومان';
-            const formattedCount = new Intl.NumberFormat('fa-IR').format(totalCount);
-
-            cartBadge.textContent = formattedCount;
-            cartTotalPrice.textContent = formattedPrice;
-            modalTotalPrice.textContent = formattedPrice;
+            document.getElementById('cart-total-price').textContent = formattedPrice;
+            document.getElementById('modal-total-price').textContent = formattedPrice;
 
             if (totalCount > 0) {
-                cartBar.classList.remove('hidden');
-                cartBar.classList.add('flex');
-                if (fabUp) {
-                    fabUp.classList.remove('bottom-6');
-                    fabUp.classList.add('bottom-20');
-                }
+                cartBar.classList.remove('hidden'); cartBar.classList.add('flex');
+                if (fabUp) { fabUp.classList.remove('bottom-6'); fabUp.classList.add('bottom-20'); }
             } else {
-                cartBar.classList.add('hidden');
-                cartBar.classList.remove('flex');
-                if (fabUp) {
-                    fabUp.classList.remove('bottom-20');
-                    fabUp.classList.add('bottom-6');
-                }
+                cartBar.classList.add('hidden'); cartBar.classList.remove('flex');
+                if (fabUp) { fabUp.classList.remove('bottom-20'); fabUp.classList.add('bottom-6'); }
                 closeCartModal();
             }
-
             renderModalItems();
         }
 
         function renderModalItems() {
             const container = document.getElementById('modal-items-container');
             const waiterList = document.getElementById('waiter-items-list');
-            container.innerHTML = '';
-            waiterList.innerHTML = '';
+            container.innerHTML = ''; waiterList.innerHTML = '';
 
-            for (let id in cart) {
-                const item = cart[id];
-                const itemTotal = new Intl.NumberFormat('fa-IR').format(item.price * item.count);
+            for (let key in cart) {
+                const item = cart[key];
+                const itemTotal = new Intl.NumberFormat('fa-IR').format(item.unitPrice * item.count);
                 const countFa = new Intl.NumberFormat('fa-IR').format(item.count);
+                
+                let addonText = '';
+                let waiterAddonText = '';
+                if (item.addons && item.addons.length > 0) {
+                    const addonNames = item.addons.map(a => a.name).join('، ');
+                    addonText = `<p class="text-[10px] text-brand font-bold mt-0.5">+ ${addonNames}</p>`;
+                    waiterAddonText = `<div class="text-[11px] text-stone-500 mr-3 mt-1">➕ ${addonNames}</div>`;
+                }
 
                 container.innerHTML += `
                     <div class="flex items-center justify-between p-2.5 bg-white/50 rounded-xl border border-[#cfae8b]/40">
                         <div>
                             <h4 class="font-bold text-sm text-stone-900">${item.name}</h4>
-                            <span class="text-xs text-stone-600">${itemTotal} تومان</span>
+                            ${addonText}
+                            <span class="text-xs text-stone-600 block mt-1">${itemTotal} تومان</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <button onclick="decreaseCart(${item.id})" class="w-7 h-7 rounded-lg bg-stone-200/80 text-stone-800 font-bold flex items-center justify-center active:scale-90">-</button>
+                            <button onclick="decreaseCart('${key}')" class="w-7 h-7 rounded-lg bg-stone-200/80 text-stone-800 font-bold flex items-center justify-center active:scale-90">-</button>
                             <span class="w-5 text-center font-bold text-sm text-stone-900">${countFa}</span>
-                            <button onclick="addToCart(${item.id}, '${item.name.replace(/'/g, "\\'")}', ${item.price})" class="w-7 h-7 rounded-lg bg-brand text-white font-bold flex items-center justify-center active:scale-90">+</button>
+                            <button onclick="increaseCart('${key}')" class="w-7 h-7 rounded-lg bg-brand text-white font-bold flex items-center justify-center active:scale-90">+</button>
                         </div>
                     </div>
                 `;
 
                 waiterList.innerHTML += `
-                    <div class="flex justify-between items-center py-1 border-b border-stone-200/60 last:border-0">
-                        <span>• ${item.name}</span>
-                        <span class="text-brand font-bold">${countFa} عدد</span>
+                    <div class="py-1 border-b border-stone-200/60 last:border-0 pb-2">
+                        <div class="flex justify-between items-center">
+                            <span>• ${item.name}</span>
+                            <span class="text-brand font-bold bg-brand/10 px-2 py-0.5 rounded">${countFa} عدد</span>
+                        </div>
+                        ${waiterAddonText}
                     </div>
                 `;
             }
         }
 
         function openCartModal() {
-            const modal = document.getElementById('cart-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+            document.getElementById('cart-modal').classList.remove('hidden');
+            document.getElementById('cart-modal').classList.add('flex');
             resetWaiterView();
         }
 
         function closeCartModal() {
-            const modal = document.getElementById('cart-modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
+            document.getElementById('cart-modal').classList.add('hidden');
+            document.getElementById('cart-modal').classList.remove('flex');
             resetWaiterView();
         }
 
         function resetWaiterView() {
-            const waiterView = document.getElementById('waiter-view');
-            const itemsContainer = document.getElementById('modal-items-container');
-            const btnText = document.getElementById('waiter-btn-text');
-            waiterView.classList.add('hidden');
-            itemsContainer.classList.remove('hidden');
-            btnText.textContent = 'نمایش به سالن‌کار';
+            document.getElementById('waiter-view').classList.add('hidden');
+            document.getElementById('modal-items-container').classList.remove('hidden');
+            document.getElementById('waiter-btn-text').textContent = 'نمایش نهایی سفارش';
         }
 
         function toggleWaiterView() {
@@ -344,14 +383,11 @@
             }
         }
 
-        // رندر کردن منو و دسته‌ها
         function renderMenu(categories, isSearching = false) {
             const navDiv = document.getElementById('category-nav');
             const menuDiv = document.getElementById('menu-content');
 
-            if (!isSearching) {
-                navDiv.innerHTML = '';
-            }
+            if (!isSearching) navDiv.innerHTML = '';
             menuDiv.innerHTML = '';
 
             if (categories.length === 0) {
@@ -359,9 +395,7 @@
                     <div class="text-center py-14 px-4 bg-cream/70 rounded-2xl border border-[#cfae8b]/40 mt-4">
                         <span class="text-4xl block mb-2">☕</span>
                         <p class="font-bold text-stone-800 text-sm">موردی با این نام پیدا نشد</p>
-                        <p class="text-stone-500 text-xs mt-1">املا یا عنوان دیگری را امتحان کنید.</p>
-                    </div>
-                `;
+                    </div>`;
                 return;
             }
 
@@ -370,20 +404,10 @@
 
                 if (!isSearching) {
                     navDiv.innerHTML += `
-                        <a href="#cat-${category.id}"
-                           class="cat-btn whitespace-nowrap px-5 py-2 rounded-full text-[13px] font-bold bg-cream text-stone-700 shadow-sm border border-[#cfae8b]/40
-                                  active:scale-95 active:bg-brand active:text-white transition-all duration-200">
-                            ${category.name}
-                        </a>
-                    `;
+                        <a href="#cat-${category.id}" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full text-[13px] font-bold bg-cream text-stone-700 shadow-sm border border-[#cfae8b]/40 active:scale-95 active:bg-brand active:text-white transition-all duration-200">${category.name}</a>`;
                 }
 
-                let categoryHTML = `
-                    <div id="cat-${category.id}" class="scroll-mt-4 mb-8">
-                        <div class="mb-4 pl-2">
-                            <h2 class="text-lg font-bold text-stone-900">${category.name}</h2>
-                        </div>
-                `;
+                let categoryHTML = `<div id="cat-${category.id}" class="scroll-mt-4 mb-8"><div class="mb-4 pl-2"><h2 class="text-lg font-bold text-stone-900">${category.name}</h2></div>`;
 
                 category.items.forEach(item => {
                     let priceFormat = new Intl.NumberFormat('fa-IR').format(item.price);
@@ -402,23 +426,20 @@
                                         <span class="text-brand font-bold text-base tracking-tight">${priceFormat}</span>
                                         <span class="text-[10px] text-brand/80 font-bold">تومان</span>
                                     </div>
-                                    <button onclick="addToCart(${item.id}, '${item.name.replace(/'/g, "\\'")}', ${item.price})"
+                                    <button onclick="openAddonModal(${item.id}, '${item.name.replace(/'/g, "\\'")}', ${item.price})"
                                             class="flex items-center gap-1 bg-brand/10 hover:bg-brand text-brand hover:text-white border border-brand/30 px-3 py-1 rounded-full text-xs font-bold transition-all active:scale-90 shadow-sm">
-                                        <span>+</span>
-                                        <span>افزودن</span>
+                                        <span>+</span><span>افزودن</span>
                                     </button>
                                 </div>
                             </div>
                         </div>
                     `;
                 });
-
                 categoryHTML += `</div>`;
                 menuDiv.innerHTML += categoryHTML;
             });
         }
 
-        // عملکرد جستجو و فیلتر
         const searchInput = document.getElementById('search-input');
         const clearBtn = document.getElementById('clear-search');
         const catNavWrapper = document.getElementById('category-nav-wrapper');
@@ -426,12 +447,10 @@
         searchInput.addEventListener('input', (e) => {
             const query = e.target.value.trim().toLowerCase();
             if (query.length > 0) {
-                clearBtn.classList.remove('hidden');
-                clearBtn.classList.add('flex');
-                catNavWrapper.classList.add('hidden'); // هنگام جستجو نوار دسته‌ها برای خلوت شدن مخفی می‌شود
+                clearBtn.classList.remove('hidden'); clearBtn.classList.add('flex');
+                catNavWrapper.classList.add('hidden');
             } else {
-                clearBtn.classList.add('hidden');
-                clearBtn.classList.remove('flex');
+                clearBtn.classList.add('hidden'); clearBtn.classList.remove('flex');
                 catNavWrapper.classList.remove('hidden');
             }
             filterMenu(query);
@@ -439,55 +458,36 @@
 
         function clearSearch() {
             searchInput.value = '';
-            clearBtn.classList.add('hidden');
-            clearBtn.classList.remove('flex');
+            clearBtn.classList.add('hidden'); clearBtn.classList.remove('flex');
             catNavWrapper.classList.remove('hidden');
             renderMenu(rawCategories, false);
             searchInput.focus();
         }
 
         function filterMenu(query) {
-            if (!query) {
-                renderMenu(rawCategories, false);
-                return;
-            }
-
+            if (!query) { renderMenu(rawCategories, false); return; }
             const filteredCategories = rawCategories.map(cat => {
                 const matchedItems = cat.items.filter(item =>
-                    item.name.toLowerCase().includes(query) ||
-                    (item.description && item.description.toLowerCase().includes(query))
+                    item.name.toLowerCase().includes(query) || (item.description && item.description.toLowerCase().includes(query))
                 );
                 return { ...cat, items: matchedItems };
             }).filter(cat => cat.items.length > 0);
-
             renderMenu(filteredCategories, true);
         }
 
-        // دریافت اطلاعات از سرور
         async function fetchMenu() {
             try {
                 const response = await fetch(API_URL);
                 rawCategories = await response.json();
-
                 renderMenu(rawCategories, false);
-
-                // پنهان کردن Splash Screen
                 setTimeout(() => {
                     const splash = document.getElementById('splash');
-                    if (splash) {
-                        splash.style.opacity = '0';
-                        setTimeout(() => splash.remove(), 700);
-                    }
+                    if (splash) { splash.style.opacity = '0'; setTimeout(() => splash.remove(), 700); }
                 }, 500);
-
                 updateCartUI();
-
             } catch (error) {
-                console.error('Error:', error);
                 document.getElementById('menu-content').innerHTML = `
-                    <div class="text-center text-red-500 font-bold mt-10 p-4 bg-red-50 rounded-xl">
-                        خطا در ارتباط با سرور. لطفاً صفحه را رفرش کنید.
-                    </div>`;
+                    <div class="text-center text-red-500 font-bold mt-10 p-4 bg-red-50 rounded-xl">خطا در ارتباط با سرور. لطفاً صفحه را رفرش کنید.</div>`;
             }
         }
 
