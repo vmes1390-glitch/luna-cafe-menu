@@ -150,6 +150,9 @@ class CategoryAdmin(ModelView, model=Category):
         Category.id: "ID", 
         Category.name: "Category Name"
     }
+
+    form_excluded_columns = [Category.items]
+    
     name = "Category"
     name_plural = "Categories"
     icon = "fa-solid fa-layer-group"

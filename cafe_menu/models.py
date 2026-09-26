@@ -21,6 +21,9 @@ class Category(Base):
 
     def __str__(self):
         return self.name
+    
+    def __repr__(self):
+        return self.name
 
 class Item(Base):
     __tablename__ = "items"
@@ -37,3 +40,9 @@ class Item(Base):
     
     # برقراری رابطه با جدول دسته‌بندی برای دسترسی راحت‌تر در کدهای پایتون
     category: Mapped["Category"] = relationship(back_populates="items")
+
+    def __str__(self):
+        return self.name
+    
+    def __repr__(self):
+        return self.name
