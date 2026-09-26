@@ -91,8 +91,8 @@
             </div>
         </div>
 
-        <!-- 2. نوار دسته‌بندی‌ها (دارای پس‌زمینه دانه قهوه برای حفظ پیوستگی طرح و جلوگیری از محو شدن) -->
-        <div id="sticky-nav" class="sticky top-0 z-40 py-3 px-4 coffee-bg shadow-sm">
+        <!-- 2. نوار دسته‌بندی‌ها (ارتفاع افزایش یافته برای پوشش کامل دانه‌های قهوه) -->
+        <div class="sticky top-0 bg-[#E2C7A8] z-40 py-5 px-4 shadow-sm">
             <div id="category-nav" class="flex overflow-x-auto gap-3 no-scrollbar pb-1">
                 <!-- دکمه‌های دسته‌بندی توسط جاوااسکریپت لود می‌شوند -->
             </div>
@@ -108,7 +108,7 @@
             <p class="text-[10px] text-stone-600 font-bold">توسعه داده شده با ❤️ برای کافه ویتا</p>
         </footer>
 
-        <!-- دکمه شناور رفتن به بالا (FAB) -->
+        <!-- دکمه شناور (FAB) -->
         <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
                 class="fixed bottom-6 left-4 w-12 h-12 bg-brand text-white rounded-full shadow-lg flex items-center justify-center text-xl z-50 hover:bg-brand-dark active:scale-90 transition-all">
             ↑
@@ -142,9 +142,9 @@
                         </a>
                     `;
 
-                    // ساخت عنوان هر بخش دسته‌بندی بدون خط اضافه
+                    // ساخت عنوان دسته‌بندی بدون خط اضافه (تنظیم فاصله برای نوار بلندتر)
                     let categoryHTML = `
-                        <div id="cat-${category.id}" class="scroll-mt-[75px] mb-8">
+                        <div id="cat-${category.id}" class="scroll-mt-[85px] mb-8">
                             <div class="mb-5 pl-2">
                                 <h2 class="text-lg font-bold text-stone-900">${category.name}</h2>
                             </div>
@@ -176,7 +176,7 @@
                     menuDiv.innerHTML += categoryHTML;
                 });
 
-                // پنهان کردن انیمیشن ورودی (Splash Screen)
+                // پنهان کردن Splash Screen
                 setTimeout(() => {
                     const splash = document.getElementById('splash');
                     if (splash) {
