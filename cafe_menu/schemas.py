@@ -17,6 +17,7 @@ class ItemResponse(ItemBase):
 
     # به Pydantic اجازه می‌ده اطلاعات رو مستقیم از آبجکت‌های SQLAlchemy بخونه
     model_config = ConfigDict(from_attributes=True)
+    display_order: int = 0
 
 
 # --- اسکیماهای مربوط به دسته‌بندی‌ها (Categories) ---

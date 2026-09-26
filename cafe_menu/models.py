@@ -16,8 +16,9 @@ class Category(Base):
 
     # برقراری رابطه یک‌به‌چند: یک دسته‌بندی می‌تونه چندین محصول داشته باشه
     items: Mapped[List["Item"]] = relationship(
-        back_populates="category", 
-        cascade="all, delete-orphan" # اگر دسته‌بندی پاک شد، محصولاتش هم پاک بشن
+        back_populates="category",
+        cascade="all, delete-orphan",
+        order_by="Item.display_order"
     )
 
     def __str__(self):
@@ -35,6 +36,7 @@ class Item(Base):
     description: Mapped[Optional[str]] = mapped_column(Text) # اختیاری (می‌تونه خالی باشه)
     price: Mapped[int] = mapped_column(Integer) # قیمت به تومان
     image_url: Mapped[Optional[str]] = mapped_column(String(255)) # لینک عکس محصول
+    display_order: Mapped[int] = mapped_column(Integer, default=0)
     
     # کلید خارجی (Foreign Key) که به id در جدول categories اشاره می‌کنه
     category_id: Mapped[int] = mapped_column(ForeignKey("categories.id"))

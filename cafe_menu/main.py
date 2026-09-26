@@ -162,7 +162,7 @@ class CategoryAdmin(ModelView, model=Category):
 
 class ItemAdmin(ModelView, model=Item):
     # ستون‌های جدول
-    column_list = [Item.id, Item.name, Item.price, Item.category_id]
+    column_list = [Item.id, Item.name, Item.price, Item.display_order, Item.category_id]
     
     # برچسب‌های انگلیسی و مرتب
     column_labels = {
@@ -171,16 +171,29 @@ class ItemAdmin(ModelView, model=Item):
         Item.price: "Price (Tomans)",
         Item.description: "Description",
         Item.image_url: "Image URL",
+        Item.display_order: "Display Order",
         Item.category_id: "Category ID"
     }
     
+    # فیلدهای فرم افزودن و ویرایش آیتم
+    form_columns = [
+        Item.name,
+        Item.price,
+        Item.description,
+        Item.image_url,
+        Item.display_order,
+        Item.category
+    ]
+    
     # جستجو و مرتب‌سازی
     column_searchable_list = [Item.name]
-    column_sortable_list = [Item.price, Item.id]
+    column_sortable_list = [Item.display_order, Item.price, Item.id]
+    column_default_sort = [(Item.display_order, False)]  # چیدمان پیش‌فرض جدول بر اساس ترتیب
     
     name = "Item"
     name_plural = "Menu Items"
     icon = "fa-solid fa-mug-hot"
+
 
 admin.add_view(CategoryAdmin)
 admin.add_view(ItemAdmin)
