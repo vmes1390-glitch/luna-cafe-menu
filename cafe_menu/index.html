@@ -129,16 +129,16 @@
         </button>
     </div>
 
-    <!-- نوار شناور سبد (طراحی ویژه و نهایی: Dark Glassmorphism) -->
+    <!-- نوار شناور سبد (Dark Glassmorphism - بدون دکمه مشاهده) -->
     <div id="cart-bar" onclick="openCartModal()" style="-webkit-tap-highlight-color: transparent;"
          class="fixed bottom-5 left-4 right-4 max-w-md mx-auto bg-stone-900/90 backdrop-blur-md text-white px-4 py-3.5 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.3)] hidden items-center justify-between z-40 cursor-pointer border border-stone-700/50 active:scale-[0.98] transition-all duration-300">
         <div class="flex items-center gap-3">
             <span id="cart-badge" class="w-6 h-6 bg-[#ea580c] text-white rounded-full flex items-center justify-center text-xs font-bold shadow-sm">۰</span>
             <span class="font-bold text-[13px] text-stone-100">یادداشت سفارش شما</span>
         </div>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2">
             <span id="cart-total-price" class="font-bold text-sm tracking-tight text-[#ECD9C5]">۰ تومان</span>
-            <span class="text-[10px] font-bold text-stone-300 bg-stone-700/60 px-2.5 py-1.5 rounded-full border border-stone-600/50">مشاهده</span>
+            <span class="text-xs text-stone-400 mb-0.5">❮</span>
         </div>
     </div>
 
@@ -241,6 +241,30 @@
 
         function saveCart() {
             try { localStorage.setItem('vita_cafe_cart', JSON.stringify(cart)); } catch(e) {}
+        }
+
+        // --- تابعی برای افزودن مستقیم به سبد (بدون پاپ‌آپ) ---
+        function addToCartDirectly(id, name, price) {
+            const cartKey = `${id}`;
+            if (!cart[cartKey]) {
+                cart[cartKey] = {
+                    cartKey: cartKey,
+                    id: id,
+                    name: name,
+                    basePrice: price,
+                    unitPrice: price,
+                    addons: [],
+                    count: 0
+                };
+            }
+            cart[cartKey].count++;
+            saveCart();
+            updateCartUI();
+            
+            // نمایش انیمیشن کوچک روی دکمه سبد خرید به کاربر حس تایید می‌دهد
+            const badge = document.getElementById('cart-badge');
+            badge.classList.add('scale-150');
+            setTimeout(() => badge.classList.remove('scale-150'), 200);
         }
 
         function openAddonModal(id, name, price) {
@@ -491,8 +515,19 @@
 
                 let categoryHTML = `<div id="cat-${category.id}" class="scroll-mt-4 mb-8"><div class="mb-4 pl-2"><h2 class="text-lg font-bold text-stone-900">${category.name}</h2></div>`;
 
+                // کلماتی که اگر در اسم دسته باشند، پاپ‌آپ سیروپ باز نمی‌شود
+                const noAddonCategories = ['چای', 'دمنوش', 'کیک', 'دسر', 'بستنی', 'آبمیوه', 'اسموتی', 'کوکی', 'شیرینی'];
+                // تشخیص اینکه این دسته نیاز به پاپ‌آپ دارد یا خیر
+                const categoryAllowsAddons = !noAddonCategories.some(word => category.name.includes(word));
+
                 category.items.forEach(item => {
                     let priceFormat = new Intl.NumberFormat('fa-IR').format(item.price);
+                    
+                    // تنظیم اکشن دکمه بر اساس نوع دسته بندی
+                    let btnAction = categoryAllowsAddons 
+                        ? `openAddonModal(${item.id}, '${item.name.replace(/'/g, "\\'")}', ${item.price})` 
+                        : `addToCartDirectly(${item.id}, '${item.name.replace(/'/g, "\\'")}', ${item.price})`;
+
                     categoryHTML += `
                         <div class="flex flex-row bg-cream rounded-2xl shadow-sm mb-4 p-3 border border-[#cfae8b]/50 active:scale-[0.99] transition-transform">
                             <div class="w-20 h-20 rounded-xl overflow-hidden shrink-0 ms-3 border border-[#cfae8b]/30 bg-cream">
@@ -508,7 +543,7 @@
                                         <span class="text-brand font-bold text-base tracking-tight">${priceFormat}</span>
                                         <span class="text-[10px] text-brand/80 font-bold">تومان</span>
                                     </div>
-                                    <button onclick="openAddonModal(${item.id}, '${item.name.replace(/'/g, "\\'")}', ${item.price})"
+                                    <button onclick="${btnAction}"
                                             style="-webkit-tap-highlight-color: transparent;"
                                             class="flex items-center gap-1 bg-brand/10 active:bg-brand text-brand active:text-white border border-brand/30 px-3 py-1 rounded-full text-xs font-bold transition-all active:scale-90 shadow-sm">
                                         <span>+</span><span>افزودن</span>
